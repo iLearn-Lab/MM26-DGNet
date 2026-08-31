@@ -20,16 +20,33 @@ class TrainingObjective:
     """Compose the epoch-dependent objective used by DGNet training."""
 
     _AUXILIARY_START_EPOCH = 5
-    _AUXILIARY_END_EPOCH = 300
+    _AUXILIARY_HALF_WEIGHT_EPOCH = 300
+    _AUXILIARY_QUARTER_WEIGHT_EPOCH = 400
+    _AUXILIARY_STOP_EPOCH = 500
 
     def __init__(self, primary_loss, auxiliary_loss):
         self.primary_loss = primary_loss
         self.auxiliary_loss = auxiliary_loss
 
+    @classmethod
+    def auxiliary_weight(cls, epoch):
+        if epoch < cls._AUXILIARY_START_EPOCH:
+            return 0.0
+        if epoch < cls._AUXILIARY_HALF_WEIGHT_EPOCH:
+            return 1.0
+        if epoch < cls._AUXILIARY_QUARTER_WEIGHT_EPOCH:
+            return 0.5
+        if epoch < cls._AUXILIARY_STOP_EPOCH:
+            return 0.25
+        return 0.0
+
     def __call__(self, epoch, prediction, labels, data):
         loss = self.primary_loss(prediction, labels)
-        if self._AUXILIARY_START_EPOCH <= epoch <= self._AUXILIARY_END_EPOCH:
-            loss = loss + self.auxiliary_loss(prediction, labels, data)
+        auxiliary_weight = self.auxiliary_weight(epoch)
+        if auxiliary_weight > 0:
+            loss = loss + auxiliary_weight * self.auxiliary_loss(
+                prediction, labels, data
+            )
         return loss
 
 

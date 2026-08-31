@@ -6,8 +6,48 @@ import torch.nn.functional as F
 class ConsensusKnowledgeDirectionalAlignmentLoss(nn.Module):
     """CDA Loss from Eqs. (7)--(11) of the DGNet paper."""
 
-    def __init__(self, device="cuda", ratio=0.8, model_name="ViT-B/32"):
+    def __init__(
+        self,
+        device="cuda",
+        ratio=0.8,
+        model_name="ViT-B/32",
+        image_mean=0.0,
+        image_std=1.0,
+        image_scale=255.0,
+    ):
         super().__init__()
+        image_mean = float(image_mean)
+        image_std = float(image_std)
+        image_scale = float(image_scale)
+        if image_std <= 0.0:
+            raise ValueError("image_std must be positive")
+        if image_scale <= 0.0:
+            raise ValueError("image_scale must be positive")
+
+        self.register_buffer(
+            "image_mean",
+            torch.tensor(image_mean, dtype=torch.float32).view(1, 1, 1, 1),
+        )
+        self.register_buffer(
+            "image_std",
+            torch.tensor(image_std, dtype=torch.float32).view(1, 1, 1, 1),
+        )
+        self.register_buffer(
+            "image_scale",
+            torch.tensor(image_scale, dtype=torch.float32).view(1, 1, 1, 1),
+        )
+        self.register_buffer(
+            "clip_mean",
+            torch.tensor(
+                [0.48145466, 0.4578275, 0.40821073], dtype=torch.float32
+            ).view(1, 3, 1, 1),
+        )
+        self.register_buffer(
+            "clip_std",
+            torch.tensor(
+                [0.26862954, 0.26130258, 0.27577711], dtype=torch.float32
+            ).view(1, 3, 1, 1),
+        )
         try:
             import clip as openai_clip
         except ImportError as error:
@@ -70,14 +110,14 @@ class ConsensusKnowledgeDirectionalAlignmentLoss(nn.Module):
             f"[Init] CLIP Positional Embedding interpolated to {target_grid}x{target_grid} for {target_img_size}px input."
         )
 
+    def prepare_clip_image(self, normalized_image):
+        """Convert dataset-normalized grayscale input to CLIP-ready RGB [0, 1]."""
+        raw_image = normalized_image * self.image_std + self.image_mean
+        unit_image = torch.clamp(raw_image / self.image_scale, 0.0, 1.0)
+        return unit_image.repeat(1, 3, 1, 1)
+
     def clip_normalize(self, x):
-        mean = torch.tensor([0.48145466, 0.4578275, 0.40821073], device=x.device).view(
-            1, 3, 1, 1
-        )
-        std = torch.tensor([0.26862954, 0.26130258, 0.27577711], device=x.device).view(
-            1, 3, 1, 1
-        )
-        return (x - mean) / std
+        return (x - self.clip_mean) / self.clip_std
 
     def safe_normalize(self, x, eps=1e-6):
         norm = x.norm(dim=-1, keepdim=True)
@@ -87,7 +127,7 @@ class ConsensusKnowledgeDirectionalAlignmentLoss(nn.Module):
         """Compute CDA Loss for tensors shaped [B, 1, H, W]."""
         pred = pred.clamp(0, 1)
         mask = mask.clamp(0, 1).float()
-        orig_img_3c = orig_img.repeat(1, 3, 1, 1)
+        orig_img_3c = self.prepare_clip_image(orig_img)
         img_src_in = self.clip_normalize(orig_img_3c)
         img_pred_in = self.clip_normalize(
             (self.ratio * pred + 1 - self.ratio) * orig_img_3c

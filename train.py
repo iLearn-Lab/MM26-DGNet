@@ -4,6 +4,7 @@ import time
 import timeit
 from pathlib import Path
 
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -150,7 +151,11 @@ class DGNetTrainer:
 
         if self.mode == "train":
             auxiliary_loss = ConsensusKnowledgeDirectionalAlignmentLoss(
-                self.device, ratio=0.8, model_name=options.clip_model
+                self.device,
+                ratio=0.8,
+                model_name=options.clip_model,
+                image_mean=train_set.img_norm_cfg["mean"],
+                image_std=train_set.img_norm_cfg["std"],
             ).to(self.device)
             self.training_objective = TrainingObjective(
                 primary_loss=self.model.module.loss,
@@ -186,13 +191,9 @@ class DGNetTrainer:
         torch.cuda.manual_seed_all(seed)
 
     def _seed_worker(self, worker_id):
-        # Preserve the original training behavior: DataLoader passes the worker
-        # id directly to the former seed callback, so workers use seeds 0..N-1.
-        random.seed(worker_id)
-        np.random.seed(worker_id)
-        torch.manual_seed(worker_id)
-        torch.cuda.manual_seed(worker_id)
-        torch.cuda.manual_seed_all(worker_id)
+        worker_seed = torch.initial_seed() % (2**32)
+        random.seed(worker_seed)
+        np.random.seed(worker_seed)
 
     @staticmethod
     def _get_device(gpu_ids_value):
@@ -328,7 +329,7 @@ class DGNetTrainer:
         return {
             "epoch": epoch + 1,
             "state_dict": self.model.module.state_dict(), # 模型权重，约20MB
-            "optimizer": self.optimizer.state_dict(), # 可以注释，约40.72MB
+            # "optimizer": self.optimizer.state_dict(), # 可以注释，约40.72MB
             "scheduler": self.scheduler.state_dict(),
             "best_mIoU": dict(self.best_metric_miou),
             "eval_pixAcc": metrics["pixAcc"],
@@ -372,9 +373,10 @@ class DGNetTrainer:
                 checkpoint_path,
             )
             best_log_line = (
-                f"{time.strftime('%Y-%m-%d-%H-%M-%S')} - {epoch:04d} "
                 f"best_mIoU {best_miou * 100:.4f} "
-                f"checkpoint {checkpoint_path.name}\n"
+                f"epoch {epoch:04d} "
+                f"PD {metrics['Pd'] * 100:.4f} "
+                f"FA {metrics['Fa'] * 1e6:.4f}\n"
             )
             with (
                 self.save_folder / f"best_mIoU_log_on_{dataset_name}.txt"
@@ -478,7 +480,11 @@ def build_parser(default_mode="train"):
     parser = argparse.ArgumentParser(description="DGNet training and evaluation")
     parser.add_argument("--mode", choices=("train", "test"), default=default_mode)
     parser.add_argument("--model", default="DGNet")
-    parser.add_argument("--name", default="DGNet", help="experiment name")
+    parser.add_argument(
+        "--name",
+        default="DGNet-MM26",
+        help="experiment name",
+    )
     parser.add_argument("--trainset", default="IRSTD-1K")
     parser.add_argument(
         "--testset",
@@ -511,7 +517,7 @@ def build_parser(default_mode="train"):
     parser.add_argument("--num_workers", type=int, default=16)
     parser.add_argument("--threshold", type=float, default=0.5)
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--gpu_ids", default="4")
+    parser.add_argument("--gpu_ids", default="1")
     parser.add_argument("--test_freq", type=int, default=1)
     parser.add_argument("--img_norm_cfg_mean", type=float, default=None)
     parser.add_argument("--img_norm_cfg_std", type=float, default=None)
@@ -559,7 +565,7 @@ def main():
             trainer.inference()
             return
 
-        print("========== Training ==========")
+        print("========== Training DGNet-MM26-9-26 ==========")
         for epoch in range(trainer.epoch_state, options.epochs):
             trainer.train_epoch(epoch)
             if (epoch + 1) % options.test_freq == 0:
