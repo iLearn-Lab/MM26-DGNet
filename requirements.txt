@@ -1,15 +1,50 @@
-# Reproduced from the CodeV environment (Python 3.10.20, CUDA 12.8).
-torch==2.8.0
-torchvision==0.23.0
-transformers==4.57.1
-numpy==1.26.4
-Pillow==11.3.0
+# Validated local environment:
+#   Python 3.10.20
+#   CUDA toolkit 12.1
+#   NVIDIA PyTorch wheels built for CUDA 12.1
+#
+# The extra index is required for the explicit ``+cu121`` wheel tags below.
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+# PyTorch runtime
+torch==2.1.2+cu121
+torchvision==0.16.2+cu121
+
+# Core numerical, image, MAT, metric, and wavelet dependencies
+numpy==1.26.3
+Pillow==10.2.0
 scipy==1.15.3
 scikit-image==0.25.2
 PyWavelets==1.8.0
-tensorboard==2.20.0
+
+# Training logs
+tensorboard==2.15.1
+
+# Used by prepare_text_features.py to export fixed PWM text features
+transformers==4.36.2
+
+# Used by CDA Loss during training. Inference does not import OpenAI CLIP.
+# Pin the official source revision installed and validated in this environment.
+clip @ git+https://github.com/openai/CLIP.git@ded190a052fdf4585bd685cee5bc96e0310d2c93
+
+# Direct OpenAI CLIP runtime dependencies, pinned to the validated versions
 ftfy==6.3.1
 regex==2026.2.28
-tqdm==4.67.3
+tqdm==4.64.1
+
+
+# Reproduced from the CodeV environment (Python 3.10.20, CUDA 12.8).
+# torch==2.8.0
+# torchvision==0.23.0
+# transformers==4.57.1
+# numpy==1.26.4
+# Pillow==11.3.0
+# scipy==1.15.3
+# scikit-image==0.25.2
+# PyWavelets==1.8.0
+# tensorboard==2.20.0
+# ftfy==6.3.1
+#regex==2026.2.28
+# tqdm==4.67.3
 
 # OpenAI CLIP is installed separately from source; see README.md.
