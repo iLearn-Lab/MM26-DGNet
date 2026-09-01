@@ -120,7 +120,7 @@ DGNet-MM26/
 
 ### 📥 1. Obtain the Repository
 
-The public repository URL will be added after release. From the extracted source package, enter the project directory:
+From the extracted source package, enter the project directory:
 
 ```bash
 git clone https://github.com/iLearn-Lab/MM26-DGNet.git

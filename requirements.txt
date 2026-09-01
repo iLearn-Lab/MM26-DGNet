@@ -31,20 +31,3 @@ clip @ git+https://github.com/openai/CLIP.git@ded190a052fdf4585bd685cee5bc96e031
 ftfy==6.3.1
 regex==2026.2.28
 tqdm==4.64.1
-
-
-# Reproduced from the CodeV environment (Python 3.10.20, CUDA 12.8).
-# torch==2.8.0
-# torchvision==0.23.0
-# transformers==4.57.1
-# numpy==1.26.4
-# Pillow==11.3.0
-# scipy==1.15.3
-# scikit-image==0.25.2
-# PyWavelets==1.8.0
-# tensorboard==2.20.0
-# ftfy==6.3.1
-#regex==2026.2.28
-# tqdm==4.67.3
-
-# OpenAI CLIP is installed separately from source; see README.md.

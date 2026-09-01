@@ -328,8 +328,7 @@ class DGNetTrainer:
     def _checkpoint_state(self, epoch, metrics):
         return {
             "epoch": epoch + 1,
-            "state_dict": self.model.module.state_dict(), # 模型权重，约20MB
-            # "optimizer": self.optimizer.state_dict(), # 可以注释，约40.72MB
+            "state_dict": self.model.module.state_dict(), 
             "scheduler": self.scheduler.state_dict(),
             "best_mIoU": dict(self.best_metric_miou),
             "eval_pixAcc": metrics["pixAcc"],
