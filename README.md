@@ -17,7 +17,7 @@ Liqiang&#160;Nie<sup>2</sup>
 <sup>&#9993;&#160;</sup>Corresponding author
 <br />
 <div align="center">
-  <a href="./paper/2026_MM_DGNet_Submit.pdf">
+  <a href="https://arxiv.org/abs/2609.00666">
     <img src="https://img.shields.io/badge/📄%20Paper-PDF-blue?style=flat-square" alt="Paper">
   </a>
   <a href="">
