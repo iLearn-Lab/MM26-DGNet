@@ -23,7 +23,7 @@ Liqiang&#160;Nie<sup>2</sup>
   <a href="">
     <img src="https://img.shields.io/badge/ACM%20MM-2026-purple?style=flat-square" alt="ACM MM 2026">
   </a>
-  <a href="https://drive.google.com/drive/folders/1LXlRvlQWsKk58WpTgLWF1RqaPwOatKWF?usp=drive_link">
+  <a href="https://huggingface.co/iLearn-Lab/MM26-DGNet">
     <img src="https://img.shields.io/badge/🏆%20Models-Checkpoints-yellow?style=flat-square" alt="Model checkpoints">
   </a>
   <a href="https://github.com/iLearn-Lab/MM26-DGNet" target="_blank">
@@ -197,12 +197,12 @@ The datasets are not redistributed in this repository. Please download them from
 The following results are reported in Table 1 of the paper. The corresponding checkpoints are included in `weights/`.
 
 | Dataset | IoU (%) ↑ | Pd (%) ↑ | Fa (×10⁻⁶) ↓ | Checkpoint |
-| :---: | ---: | ---: | ---: | :---: |
+| :---: | :---: | :---: | :---: | :--- |
 | IRSTD-1K | 72.72 | 93.88 | 4.25 | [`best_IRSTD-1K.pth.tar`](https://drive.google.com/file/d/1nFQDGIoQ7wghey1P3VFK-aOkPUSEPfNt/view?usp=drive_link) |
 | NUAA-SIRST | 82.68 | 100.00 | 1.24 | [`best_SIRST.pth.tar`](https://drive.google.com/file/d/1fLs8ML9f6AUPDz8C7Qz-2Zzhiyb0YU_H/view?usp=drive_link) |
 | NUDT-SIRST | 95.78 | 99.37 | 1.19 | [`best_NUDT-SIRST.pth.tar`](https://drive.google.com/file/d/11Je0H8egu5GRwYor5ULu9j8FOoBXJMfr/view?usp=drive_link) |
 
-Visualization results can be found here：[DGNet\_Visual\_Result](https://drive.google.com/drive/folders/1OBJl1AcUSZvrReiCoIUZ-VLjXcU6aYuh?usp=drive_link)
+Visualization results can be found here：[DGNet\_Visual\_Result](https://drive.google.com/drive/folders/1OBJl1AcUSZvrReiCoIUZ-VLjXcU6aYuh?usp=drive_link) or [All_Result_huggingface](https://huggingface.co/iLearn-Lab/MM26-DGNet).
 
 ## 🚀 Usage
 
