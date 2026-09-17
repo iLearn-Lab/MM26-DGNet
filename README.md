@@ -184,11 +184,11 @@ an infrared image containing small and sparse thermal targets
 
 All experiments in the paper use three public infrared small-target datasets. IRSTD-1K and NUAA-SIRST are divided into training and testing sets at an approximately 4:1 ratio. NUDT-SIRST is divided approximately equally.
 
-| Dataset | Description | Images | Train / test | Source |
-| --- | --- | ---: | ---: | --- |
-| IRSTD-1K | Real infrared scenes with diverse targets and complex backgrounds | 1,001 | 800 / 201 | [ISNet repository](https://github.com/RuiZhang97/ISNet) |
-| NUAA-SIRST | Real single-frame infrared images; also referred to as SIRST | 427 | 341 / 86 | [SIRST repository](https://github.com/YimianDai/sirst) |
-| NUDT-SIRST | Synthesized 256×256 infrared images with varied target characteristics | 1,327 | 663 / 664 | [DNANet repository](https://github.com/YeRen123455/Infrared-Small-Target-Detection) |
+| Dataset | Description | Images | Train/test | Source |
+| --- | --- | :---: | :---: | --- |
+| IRSTD-1K | Real infrared scenes with diverse targets and complex backgrounds | 1001 | 800,201 | [IRSTD-1K](https://github.com/RuiZhang97/ISNet) |
+| NUAA-SIRST | Real single-frame infrared images; also referred to as SIRST | 427 | 341,86 | [NUAA-SIRST](https://github.com/YimianDai/sirst) |
+| NUDT-SIRST | Synthesized 256×256 infrared images with varied target characteristics | 1327 | 663,664 | [NUDT-SIRST](https://github.com/YeRen123455/Infrared-Small-Target-Detection) |
 
 The datasets are not redistributed in this repository. Please download them from their public sources and follow their original licenses and citation requirements.
 
