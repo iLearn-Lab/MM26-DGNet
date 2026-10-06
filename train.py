@@ -82,7 +82,7 @@ class DGNetTrainer:
                 patch_size=options.patch_size,
                 mode="train",
                 img_norm_cfg=options.img_norm_cfg,
-                use_fft_aug=not options.disable_fft_aug,
+                use_aug=not options.disable_fft_aug,
             )
             self.train_loader = DataLoader(
                 train_set,
@@ -106,7 +106,7 @@ class DGNetTrainer:
                 patch_size=None,
                 mode=evaluation_mode,
                 img_norm_cfg=options.img_norm_cfg,
-                use_fft_aug=False,
+                use_aug=False,
             )
             self.val_loaders[dataset_name] = DataLoader(
                 val_set,
