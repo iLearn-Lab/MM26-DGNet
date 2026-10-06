@@ -520,7 +520,7 @@ def build_parser(default_mode="train"):
     parser.add_argument("--test_freq", type=int, default=1)
     parser.add_argument("--img_norm_cfg_mean", type=float, default=None)
     parser.add_argument("--img_norm_cfg_std", type=float, default=None)
-    parser.add_argument("--disable_fft_aug", action="store_true")
+    parser.add_argument("--disable_aug", action="store_true")
     parser.add_argument("--save_output", dest="save_output", action="store_true")
     parser.add_argument("--no_save_output", dest="save_output", action="store_false")
     parser.add_argument(
